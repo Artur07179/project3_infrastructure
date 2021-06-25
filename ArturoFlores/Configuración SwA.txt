@@ -1,0 +1,15 @@
+enable 
+configure terminal
+hostname SwA
+no ip domain-lookup
+banner motd #Unauthorized access prohibited to SwA!#
+
+vlan 21
+name produccion
+exit
+int vlan 21
+ip add 172.16.44.2 255.255.254.0
+no shutdown
+exit
+do wr
+
