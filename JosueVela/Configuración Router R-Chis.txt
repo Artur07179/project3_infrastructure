@@ -1,0 +1,79 @@
+enable
+configure terminal
+no ip domain-lookup
+hostname R-Chis
+
+banner motd #Unauthorized access prohibited!#
+clock set 12:00:00 June 24 2021
+
+security passwords min-length 5
+enable password cisco
+enable secret cisco
+service password-encriyption
+
+line con 0
+password class
+login
+logging synchronous
+exec-timeout 5 0
+exit
+
+line aux 0
+password class
+login
+logging synchronous
+exit
+
+line vty 0 15
+password class
+login 
+logging synchronous
+exit
+
+ip domain-name utez.edu.mx
+crypto key generate rsa
+username admin privilege 15 password letmi
+line vty 0 4
+transport input ssh
+login local
+ip ssh time-out 15
+ip authentication-retries 3
+ip ssh version 2
+
+
+int se0/0/0
+ip add 10.10.8.6 255.255.255.252
+no shutdown
+
+int gi0/1
+ip add 172.16.46.193 255.255.255.192
+no shutdown
+
+int gi0/0
+ip add 172.16.46.129 255.255.255.192
+no shutdown
+
+exit
+do wr
+
+ip dhcp pool contabilidad
+network 172.16.46.128 255.255.255.192
+default-router 172.16.46.129
+exit
+
+
+ip dhcp pool TI
+network 172.16.46.192 255.255.255.192
+default-router 172.16.46.193
+exit
+ip dhcp excluded-address 172.16.46.130
+ip dhcp excluded-address 172.16.46.194
+do wr
+
+router ospf 1
+network 172.16.46.128 0.0.0.63 area 0
+network 172.16.46.192 0.0.0.63 area 0
+network 10.10.8.4 0.0.0.3 area 0
+exit 
+do wr
+
